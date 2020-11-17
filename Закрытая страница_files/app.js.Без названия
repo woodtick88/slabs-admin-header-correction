@@ -1,0 +1,1766 @@
+
+function obrabotkaSelectShow($select){
+
+		if($select[0].id == 'block_block_id'){
+
+			if($select.val() == 0){
+				$('#block_subblock_id').val(0).trigger('change');
+			}
+		}
+		else{
+
+			if($select.val() == 0){
+				$('#obrabotka_wrapp').slideDown(300);
+			}
+			else{
+				$('#obrabotka_wrapp').slideUp(300);
+			}
+		}
+
+
+	}
+$(document).ready(function(){
+
+	
+	if($('#obrabotka_wrapp').length) {
+		
+		obrabotkaSelectShow($('#block_subblock_id'));
+		obrabotkaSelectShow($('#block_block_id'));
+
+		$('#block_subblock_id').on('change', function(){
+			obrabotkaSelectShow($(this));
+		});
+		
+		$('#block_block_id').on('change', function(){
+			obrabotkaSelectShow($(this));
+		});
+
+	}
+
+	$("form").dirtyForms();
+	
+// var form_clean;
+
+// // serialize clean form
+// $(function() { 
+//     form_clean = $("form:not(#form-signin_v1)").serialize();  
+// });
+
+// // compare clean and dirty form before leaving
+// window.onbeforeunload = function (e) {
+//     var form_dirty = $("form:not(#form-signin_v1)").serialize();
+//     if(form_clean != form_dirty) {
+//         return 'Изменения не сохранены. Все равно покинуть страницу?';
+//     }
+// };
+
+/* ==========================================================================
+	Scroll
+	========================================================================== */
+
+	if (!("ontouchstart" in document.documentElement)) {
+
+		document.documentElement.className += " no-touch";
+
+		var jScrollOptions = {
+			autoReinitialise: true,
+			autoReinitialiseDelay: 100,
+			contentWidth: '0px'
+		};
+
+		$('.scrollable .box-typical-body').jScrollPane(jScrollOptions);
+		$('.side-menu').jScrollPane(jScrollOptions);
+		$('.side-menu-addl').jScrollPane(jScrollOptions);
+		$('.scrollable-block').jScrollPane(jScrollOptions);
+	}
+
+/* ==========================================================================
+    Header search
+    ========================================================================== */
+
+	$('.site-header .site-header-search').each(function(){
+		var parent = $(this),
+			overlay = parent.find('.overlay');
+
+		overlay.click(function(){
+			parent.removeClass('closed');
+		});
+
+		parent.clickoutside(function(){
+			if (!parent.hasClass('closed')) {
+				parent.addClass('closed');
+			}
+		});
+	});
+
+/* ==========================================================================
+    Header mobile menu
+    ========================================================================== */
+
+	// Dropdowns
+	$('.site-header-collapsed .dropdown').each(function(){
+		var parent = $(this),
+			btn = parent.find('.dropdown-toggle');
+
+		btn.click(function(){
+			if (parent.hasClass('mobile-opened')) {
+				parent.removeClass('mobile-opened');
+			} else {
+				parent.addClass('mobile-opened');
+			}
+		});
+	});
+
+	$('.dropdown-more').each(function(){
+		var parent = $(this),
+			more = parent.find('.dropdown-more-caption'),
+			classOpen = 'opened';
+
+		more.click(function(){
+			if (parent.hasClass(classOpen)) {
+				parent.removeClass(classOpen);
+			} else {
+				parent.addClass(classOpen);
+			}
+		});
+	});
+
+	// Left mobile menu
+	$('.hamburger').click(function(){
+		if ($('body').hasClass('menu-left-opened')) {
+			$(this).removeClass('is-active');
+			$('body').removeClass('menu-left-opened');
+			$('html').css('overflow','auto');
+		} else {
+			$(this).addClass('is-active');
+			$('body').addClass('menu-left-opened');
+			$('html').css('overflow','hidden');
+		}
+	});
+
+	$('.mobile-menu-left-overlay').click(function(){
+		$('.hamburger').removeClass('is-active');
+		$('body').removeClass('menu-left-opened');
+		$('html').css('overflow','auto');
+	});
+
+	// Right mobile menu
+	$('.site-header .burger-right').click(function(){
+		if ($('body').hasClass('menu-right-opened')) {
+			$('body').removeClass('menu-right-opened');
+			$('html').css('overflow','auto');
+		} else {
+			$('.hamburger').removeClass('is-active');
+			$('body').removeClass('menu-left-opened');
+			$('body').addClass('menu-right-opened');
+			$('html').css('overflow','hidden');
+		}
+	});
+
+	$('.mobile-menu-right-overlay').click(function(){
+		$('body').removeClass('menu-right-opened');
+		$('html').css('overflow','auto');
+	});
+
+/* ==========================================================================
+    Header help
+    ========================================================================== */
+
+	$('.help-dropdown').each(function(){
+		var parent = $(this),
+			btn = parent.find('>button'),
+			popup = parent.find('.help-dropdown-popup'),
+			jscroll
+		;
+
+		btn.click(function(){
+			if (parent.hasClass('opened')) {
+				parent.removeClass('opened');
+				jscroll.destroy();
+			} else {
+				parent.addClass('opened');
+
+				if (!("ontouchstart" in document.documentElement)) {
+					setTimeout(function(){
+						jscroll = parent.find('.jscroll').jScrollPane(jScrollOptions).data().jsp;
+					},0);
+				}
+			}
+		});
+
+		$('html').click(function(event) {
+		    if (
+		        !$(event.target).closest('.help-dropdown-popup').length
+		        &&
+		        !$(event.target).closest('.help-dropdown>button').length
+		        &&
+		        !$(event.target).is('.help-dropdown-popup')
+		        &&
+		        !$(event.target).is('.help-dropdown>button')
+		    ) {
+				if (parent.hasClass('opened')) {
+					parent.removeClass('opened');
+					jscroll.destroy();
+		        }
+		    }
+		});
+	});
+
+/* ==========================================================================
+    Side menu list
+    ========================================================================== */
+
+	$('.side-menu-list li.with-sub').each(function(){
+		var parent = $(this),
+			clickLink = parent.find('>span'),
+			subMenu = parent.find('>ul');
+
+		clickLink.click(function() {
+			if (parent.hasClass('opened')) {
+				parent.removeClass('opened');
+				subMenu.slideUp();
+				subMenu.find('.opened').removeClass('opened');
+			} else {
+				if (clickLink.parents('.with-sub').length == 1) {
+					$('.side-menu-list .opened').removeClass('opened').find('ul').slideUp();
+				}
+				parent.addClass('opened');
+				subMenu.slideDown();
+			}
+		});
+	});
+
+
+/* ==========================================================================
+    Dashboard
+    ========================================================================== */
+
+	$(window).resize(function(){
+		$('body').trigger('click');
+	});
+
+	// Collapse box
+	$('.box-typical-dashboard').each(function(){
+		var parent = $(this),
+			btnCollapse = parent.find('.action-btn-collapse');
+
+		btnCollapse.click(function(){
+			if (parent.hasClass('box-typical-collapsed')) {
+				parent.removeClass('box-typical-collapsed');
+			} else {
+				parent.addClass('box-typical-collapsed');
+			}
+		});
+	});
+
+	// Full screen box
+	$('.box-typical-dashboard').each(function(){
+		var parent = $(this),
+			btnExpand = parent.find('.action-btn-expand'),
+			classExpand = 'box-typical-full-screen';
+
+		btnExpand.click(function(){
+			if (parent.hasClass(classExpand)) {
+				parent.removeClass(classExpand);
+				$('html').css('overflow','auto');
+			} else {
+				parent.addClass(classExpand);
+				$('html').css('overflow','hidden');
+			}
+		});
+	});
+
+/* ==========================================================================
+	Select
+	========================================================================== */
+
+	if ($('.bootstrap-select').length) {
+		// Bootstrap-select
+		$('.bootstrap-select').selectpicker({
+			style: '',
+			width: '100%',
+			size: 8
+		});
+	}
+
+	if ($('.select2').length) {
+		// Select2
+		//$.fn.select2.defaults.set("minimumResultsForSearch", "Infinity");
+
+		$('.select2').not('.manual').select2();
+
+		$(".select2-icon").not('.manual').select2({
+			templateSelection: select2Icons,
+			templateResult: select2Icons
+		});
+
+		$(".select2-arrow").not('.manual').select2({
+			theme: "arrow"
+		});
+
+		$('.select2-no-search-arrow').select2({
+			minimumResultsForSearch: "Infinity",
+			theme: "arrow"
+		});
+
+		$('.select2-no-search-default').select2({
+			minimumResultsForSearch: "Infinity"
+		});
+
+		$(".select2-white").not('.manual').select2({
+			theme: "white"
+		});
+
+		$(".select2-photo").not('.manual').select2({
+			templateSelection: select2Photos,
+			templateResult: select2Photos
+		});
+		$("#name_sleb").select2({
+			ajax: {
+				url: "/ajax.php",
+				type: "post",
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
+					var query = {
+						search: params.term,
+						act: 'search_articul'
+					}
+					return query;
+				},
+				processResults: function (response) {
+					return {
+						results: response
+					};
+				},
+				cache: false
+			},
+			templateSelection: function(container) {
+				$(container.element).attr("data-sleb", "{"+container.datasleb+"}");
+				$(container.element).attr("data-id", container.dataid);
+                $(container.element).attr("data-nameId", container.datanameId);
+                $(container.element).attr("data-nameName", container.datanameName);
+                $(container.element).attr("data-blockId", container.datablockId);
+                $(container.element).attr("data-blockName", container.datablockId);
+                $(container.element).attr("data-subBlockId", container.datasubBlockId);
+                $(container.element).attr("data-subBlockName", container.datablockId+'-'+container.datasubBlockId);
+                $(container.element).attr("data-distributor", container.datadistributor);
+				return container.text;
+			}
+		});
+	}
+
+	function select2Icons (state) {
+		if (!state.id) { return state.text; }
+		var $state = $(
+			'<span class="font-icon ' + state.element.getAttribute('data-icon') + '"></span><span>' + state.text + '</span>'
+		);
+		return $state;
+	}
+
+	function select2Photos (state) {
+		if (!state.id) { return state.text; }
+		var $state = $(
+			'<span class="user-item"><img src="' + state.element.getAttribute('data-photo') + '"/>' + state.text + '</span>'
+		);
+		return $state;
+	}
+
+/* ==========================================================================
+	Tooltips
+	========================================================================== */
+
+	// Tooltip
+	$('[data-toggle="tooltip"]').tooltip({
+		html: true
+	});
+
+	// Popovers
+	$('[data-toggle="popover"]').popover({
+		trigger: 'focus'
+	});
+	
+/* ==========================================================================
+	Full height box
+	========================================================================== */
+
+	function boxFullHeight() {
+		var sectionHeader = $('.section-header');
+		var sectionHeaderHeight = 0;
+
+		if (sectionHeader.length) {
+			sectionHeaderHeight = parseInt(sectionHeader.height()) + parseInt(sectionHeader.css('padding-bottom'));
+		}
+
+		$('.box-typical-full-height').css('min-height',
+			$(window).height() -
+			parseInt($('.page-content').css('padding-top')) -
+			parseInt($('.page-content').css('padding-bottom')) -
+			sectionHeaderHeight -
+			parseInt($('.box-typical-full-height').css('margin-bottom')) - 2
+		);
+		$('.box-typical-full-height>.tbl, .box-typical-full-height>.box-typical-center').height(parseInt($('.box-typical-full-height').css('min-height')));
+	}
+
+	boxFullHeight();
+
+	$(window).resize(function(){
+		boxFullHeight();
+	});
+
+/* ==========================================================================
+	Chat
+	========================================================================== */
+
+	function chatHeights() {
+		$('.chat-dialog-area').height(
+			$(window).height() -
+			parseInt($('.page-content').css('padding-top')) -
+			parseInt($('.page-content').css('padding-bottom')) -
+			parseInt($('.chat-container').css('margin-bottom')) - 2 -
+			$('.chat-area-header').outerHeight() -
+			$('.chat-area-bottom').outerHeight()
+		);
+		$('.chat-list-in')
+			.height(
+				$(window).height() -
+				parseInt($('.page-content').css('padding-top')) -
+				parseInt($('.page-content').css('padding-bottom')) -
+				parseInt($('.chat-container').css('margin-bottom')) - 2 -
+				$('.chat-area-header').outerHeight()
+			)
+			.css('min-height', parseInt($('.chat-dialog-area').css('min-height')) + $('.chat-area-bottom').outerHeight());
+	}
+
+	chatHeights();
+
+	$(window).resize(function(){
+		chatHeights();
+	});
+
+/* ==========================================================================
+	Box typical full height with header
+	========================================================================== */
+
+	function boxWithHeaderFullHeight() {
+		/*$('.box-typical-full-height-with-header').each(function(){
+			var box = $(this),
+				boxHeader = box.find('.box-typical-header'),
+				boxBody = box.find('.box-typical-body');
+
+			boxBody.height(
+				$(window).height() -
+				parseInt($('.page-content').css('padding-top')) -
+				parseInt($('.page-content').css('padding-bottom')) -
+				parseInt(box.css('margin-bottom')) - 2 -
+				boxHeader.outerHeight()
+			);
+		});*/
+	}
+
+	boxWithHeaderFullHeight();
+
+	$(window).resize(function() {
+		boxWithHeaderFullHeight();
+	});
+
+/* ==========================================================================
+	File manager
+	========================================================================== */
+
+	function fileManagerHeight() {
+		$('.files-manager').each(function(){
+			var box = $(this),
+				boxColLeft = box.find('.files-manager-side'),
+				boxSubHeader = box.find('.files-manager-header'),
+				boxCont = box.find('.files-manager-content-in'),
+				boxColRight = box.find('.files-manager-aside');
+
+			var paddings = parseInt($('.page-content').css('padding-top')) +
+							parseInt($('.page-content').css('padding-bottom')) +
+							parseInt(box.css('margin-bottom')) + 2;
+
+			boxColLeft.height('auto');
+			boxCont.height('auto');
+			boxColRight.height('auto');
+
+			if ( boxColLeft.height() <= ($(window).height() - paddings) ) {
+				boxColLeft.height(
+					$(window).height() - paddings
+				);
+			}
+
+			if ( boxColRight.height() <= ($(window).height() - paddings - boxSubHeader.outerHeight()) ) {
+				boxColRight.height(
+					$(window).height() -
+					paddings -
+					boxSubHeader.outerHeight()
+				);
+			}
+
+			boxCont.height(
+				boxColRight.height()
+			);
+		});
+	}
+
+	fileManagerHeight();
+
+	$(window).resize(function(){
+		fileManagerHeight();
+	});
+
+/* ==========================================================================
+	Mail
+	========================================================================== */
+
+	function mailBoxHeight() {
+		$('.mail-box').each(function(){
+			var box = $(this),
+				boxHeader = box.find('.mail-box-header'),
+				boxColLeft = box.find('.mail-box-list'),
+				boxSubHeader = box.find('.mail-box-work-area-header'),
+				boxColRight = box.find('.mail-box-work-area-cont');
+
+			boxColLeft.height(
+				$(window).height() -
+				parseInt($('.page-content').css('padding-top')) -
+				parseInt($('.page-content').css('padding-bottom')) -
+				parseInt(box.css('margin-bottom')) - 2 -
+				boxHeader.outerHeight()
+			);
+
+			boxColRight.height(
+				$(window).height() -
+				parseInt($('.page-content').css('padding-top')) -
+				parseInt($('.page-content').css('padding-bottom')) -
+				parseInt(box.css('margin-bottom')) - 2 -
+				boxHeader.outerHeight() -
+				boxSubHeader.outerHeight()
+			);
+		});
+	}
+
+	mailBoxHeight();
+
+	$(window).resize(function(){
+		mailBoxHeight();
+	});
+
+/* ==========================================================================
+	Nestable
+	========================================================================== */
+
+	$('.dd-handle').hover(function(){
+		$(this).prev('button').addClass('hover');
+		$(this).prev('button').prev('button').addClass('hover');
+	}, function(){
+		$(this).prev('button').removeClass('hover');
+		$(this).prev('button').prev('button').removeClass('hover');
+	});
+
+/* ==========================================================================
+	Addl side menu
+	========================================================================== */
+
+	setTimeout(function(){
+		if (!("ontouchstart" in document.documentElement)) {
+			$('.side-menu-addl').jScrollPane(jScrollOptions);
+		}
+	},1000);
+
+
+/* ==========================================================================
+	Header notifications
+	========================================================================== */
+
+	// Tabs hack
+	$('.dropdown-menu-messages a[data-toggle="tab"]').click(function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		$(this).tab('show');
+
+		// Scroll
+		if (!("ontouchstart" in document.documentElement)) {
+			jspMessNotif = $('.dropdown-notification.messages .tab-pane.active').jScrollPane(jScrollOptions).data().jsp;
+		}
+	});
+
+	// Scroll
+	var jspMessNotif,
+		jspNotif;
+
+	$('.dropdown-notification.messages').on('show.bs.dropdown', function () {
+		if (!("ontouchstart" in document.documentElement)) {
+			jspMessNotif = $('.dropdown-notification.messages .tab-pane.active').jScrollPane(jScrollOptions).data().jsp;
+		}
+	});
+
+	$('.dropdown-notification.messages').on('hide.bs.dropdown', function () {
+		if (!("ontouchstart" in document.documentElement)) {
+			jspMessNotif.destroy();
+		}
+	});
+
+	$('.dropdown-notification.notif').on('show.bs.dropdown', function () {
+		if (!("ontouchstart" in document.documentElement)) {
+			jspNotif = $('.dropdown-notification.notif .dropdown-menu-notif-list').jScrollPane(jScrollOptions).data().jsp;
+		}
+	});
+
+	$('.dropdown-notification.notif').on('hide.bs.dropdown', function () {
+		if (!("ontouchstart" in document.documentElement)) {
+			jspNotif.destroy();
+		}
+	});
+
+/* ==========================================================================
+	Steps progress
+	========================================================================== */
+
+	function stepsProgresMarkup() {
+		$('.steps-icon-progress').each(function(){
+			var parent = $(this),
+				cont = parent.find('ul'),
+				padding = 0,
+				padLeft = (parent.find('li:first-child').width() - parent.find('li:first-child .caption').width())/2,
+				padRight = (parent.find('li:last-child').width() - parent.find('li:last-child .caption').width())/2;
+
+			padding = padLeft;
+
+			if (padLeft > padRight) padding = padRight;
+
+			cont.css({
+				marginLeft: -padding,
+				marginRight: -padding
+			});
+		});
+	}
+
+	stepsProgresMarkup();
+
+	$(window).resize(function(){
+		stepsProgresMarkup();
+	});
+
+/* ========================================================================== */
+
+	$('.control-panel-toggle').on('click', function() {
+		var self = $(this);
+		
+		if (self.hasClass('open')) {
+			self.removeClass('open');
+			$('.control-panel').removeClass('open');
+		} else {
+			self.addClass('open');
+			$('.control-panel').addClass('open');
+		}
+	});
+
+	$('.control-item-header .icon-toggle, .control-item-header .text').on('click', function() {
+		var content = $(this).closest('li').find('.control-item-content');
+
+		if (content.hasClass('open')) {
+			content.removeClass('open');
+		} else {
+			$('.control-item-content.open').removeClass('open');
+			content.addClass('open');
+		}
+	});
+
+	$.browser = {};
+	$.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+	$.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
+	$.browser.mozilla = /firefox/.test(navigator.userAgent.toLowerCase());
+
+	if ($.browser.chrome) {
+		$('body').addClass('chrome-browser');
+	} else if ($.browser.msie) {
+		$('body').addClass('msie-browser');
+	} else if ($.browser.mozilla) {
+		$('body').addClass('mozilla-browser');
+	}
+
+	$('#show-hide-sidebar-toggle').on('click', function() {
+		if (!$('body').hasClass('sidebar-hidden')) {
+			$('body').addClass('sidebar-hidden');
+		} else {
+			$('body').removeClass('sidebar-hidden');
+		}
+	});
+
+
+
+	/* ==========================================================================					
+	Filter reset
+	========================================================================== */
+	$('.reset_filter').click(function(){	
+		$(this).parents('.card').find('input').val(null);
+		$('.custom_select').val(null).trigger('change');
+		$(this).parents('.card').find('.mr-2').trigger('click');
+	});
+
+	$('.block_all').click(function(){
+		$('.block-all-button').toggle();
+	});
+	$('.unblock_all').click(function(){
+		$('.unblock-all-button').toggle();
+	});
+	$('.delete_all').click(function(){
+		$('.delete-all-button').toggle();
+	});
+	
+	
+
+	$('.delete-all-button').on("click", function(){	
+		var table = $('#example').DataTable();
+		var dob=$(this);
+		param =  new Array();
+		if($('.params_elm').length>0)
+		{
+			str = $('.params_elm').serialize();
+			lines = str.split("&");
+			for ( i = 0; i < lines.length; i++ ) 
+			{
+				data = lines[i].split("=");
+				if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+				{
+					if(!param[data[0]])
+						param[data[0]]=new Array();
+					param[data[0]][i]=data[1];
+				}
+				else
+				{
+					param[data[0]]=data[1];
+				}
+			}
+		}
+		param['act']='admin_delete_elements';
+		// Create new JsHttpRequest object.
+		var req = new JsHttpRequest();
+		// Code automatically called on load finishing.
+		req.onreadystatechange = function() 
+		{
+			if (req.readyState == 4) {
+				if(req.responseText=='ok')
+				{
+					table.rows('.selected').remove().draw(false);
+				}
+				else
+					alert(req.responseText);
+				dob.hide();
+			}
+		}
+		// Prepare request object (automatically choose GET or POST).
+		req.open('post', '/ajax.php', true);
+		// Send data to backend.
+		req.send( {param:param} );
+	});
+	$('.block-all-button').on("click", function(){	
+		var bob=$(this);
+		param =  new Array();
+		if($('.params_elm').length>0)
+		{
+			str = $('.params_elm').serialize();
+			lines = str.split("&");
+			for ( i = 0; i < lines.length; i++ ) 
+			{
+				data = lines[i].split("=");
+				if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+				{
+					if(!param[data[0]])
+						param[data[0]]=new Array();
+					param[data[0]][i]=data[1];
+				}
+				else
+				{
+					param[data[0]]=data[1];
+				}
+			}
+		}
+		param['act']='admin_block_elements';
+		// Create new JsHttpRequest object.
+		var req = new JsHttpRequest();
+		// Code automatically called on load finishing.
+		req.onreadystatechange = function() 
+		{
+			if (req.readyState == 4) {
+				if(req.responseText=='ok')
+				{
+					$('tr.selected').find('.block_btn').addClass('banned');		
+				}
+				else
+					alert(req.responseText);
+				bob.hide();
+			}
+		}
+		// Prepare request object (automatically choose GET or POST).
+		req.open('post', '/ajax.php', true);
+		// Send data to backend.
+		req.send( {param:param} );
+	});
+	$('.unblock-all-button').on("click", function(){	
+		var bob=$(this);
+		param =  new Array();
+		if($('.params_elm').length>0)
+		{
+			str = $('.params_elm').serialize();
+			lines = str.split("&");
+			for ( i = 0; i < lines.length; i++ ) 
+			{
+				data = lines[i].split("=");
+				if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+				{
+					if(!param[data[0]])
+						param[data[0]]=new Array();
+					param[data[0]][i]=data[1];
+				}
+				else
+				{
+					param[data[0]]=data[1];
+				}
+			}
+		}
+		param['act']='admin_unblock_elements';
+		// Create new JsHttpRequest object.
+		var req = new JsHttpRequest();
+		// Code automatically called on load finishing.
+		req.onreadystatechange = function() 
+		{
+			if (req.readyState == 4) {
+				if(req.responseText=='ok')
+				{
+					$('tr.selected').find('.block_btn').removeClass('banned');		
+				}
+				else
+					alert(req.responseText);
+				bob.hide();
+			}
+		}
+		// Prepare request object (automatically choose GET or POST).
+		req.open('post', '/ajax.php', true);
+		// Send data to backend.
+		req.send( {param:param} );
+	});
+	// $('#example').on( 'draw.dt', function () {
+	// 	if ($('#example tr').length <= 11) {
+    //         $('.dataTables_paginate').hide();
+    //     } else{
+	// 		$('.dataTables_paginate').show();
+	// 	}
+	// });
+
+	/* ==========================================================================
+	DataPicker
+	========================================================================== */
+	if($('#daterange1').length){
+		$('#daterange1').daterangepicker({
+			singleDatePicker: true,
+			showDropdowns: true
+		});
+	}
+
+	if($('#daterange2').length){
+		$('#daterange2').daterangepicker({
+			singleDatePicker: true,
+			showDropdowns: true
+		});
+	}
+
+
+
+	/* ==========================================================================
+	Change
+	========================================================================== */
+
+	$('.btn_change').click(function(){
+//		confirm('Изменить?');		
+		change_bounds();
+	});
+	$('.btn_status').click(function(){
+//		confirm('Изменить?');		
+		change_status();
+	});
+	$('.btn_discount').click(function(){
+//		confirm('Изменить?');		
+		add_discount();
+	});
+
+
+	// 06.05.2019
+	
+	
+	/* ==========================================================================
+	File input
+	========================================================================== */
+
+
+	$('body').on( 'change', '.custom-file-input', function (e) {		
+		$(this).next('.custom-file-label').html(e.target.files[0].name);
+	});
+	function readURL($files, i) {
+	  var reader = new FileReader();
+		    
+	    reader.onload = function(e) {
+	      	$('#add_slebs_wrapp').find('.add_slebs_item[data-id="'+i+'"]').find('.add_slebs_item_img>img').attr('src', e.target.result);
+	    	$('#add_slebs_wrapp').find('.add_slebs_item[data-id="'+i+'"]').find('.add_slebs_item_img>input[type="hidden"]').val($files.name);
+	      	// addSlebs(i, e.target.result, $files);
+	    }
+	    
+	    reader.readAsDataURL($files);
+
+	}
+
+	$('#add_slebs').on( 'change', function (e) {
+
+		$('#add_slebs_wrapp').html('');
+		
+		var $filesList = e.target.files,
+			$files = [];
+		for (var i = 0; i <= $filesList.length - 1; i++) {
+			var item = $filesList[i];
+			item.idFile = i;
+			$files.push($filesList[i]);
+		}
+
+		$files.sort(function(a, b){
+			if(a.name < b.name) { return -1; }
+		    if(a.name > b.name) { return 1; }
+		    return 0;
+		});
+
+		for (var i = 0; i <= $files.length - 1; i++) {
+
+			readURL($files[i], $files[i].idFile);
+		    addSlebs($files[i].idFile, $files[i]);
+		}
+		$(this).closest('.add_slebs-file').hide()
+	});
+
+	function validationInput($input){
+
+		if($input.val() == ''){
+			$input.addClass('error');
+		}
+		else{
+			$input.removeClass('error');	
+		}
+
+	}
+	function listLoadImg(){
+
+		var $id = '';
+		$('#add_slebs_wrapp').find('.add_slebs_item').each(function(index, el){
+			if(!index){
+				$id = $(el).attr('data-id');
+			}
+			else{
+				$id += ',' + $(el).attr('data-id');
+			}
+		});
+
+		$('#add_slebs_load').val($id);
+	}
+
+	function addSlebs(id, $files){
+
+		var $btn = '<a href="javascript:;" class="btn btn-success mb-4 js_copy_values">Размножить данные на все</a>',
+			$tamplate = '<fieldset data-id="'+id+'" class="add_slebs_item">\
+							<div class="add_slebs_item_close">x</div>\
+							<div class="add_slebs_item_img">\
+								<img src="" alt="">\
+								<h5 class="add_slebs_item_title title5">'+$files.name+'</h5>\
+								<input type="hidden" name="name_photo[]">\
+							</div>\
+							<h5 class="m-t-0 mb-1">Основные характеристики</h5>\
+							<div class="mb-3">\
+								<p class="m-b-0">Внутренний артикул</p>\
+								<input class="form-control validation_input" type="text" name="vn_articul[]" required>\
+								<div class="validation_label">Заполните это поле</div>\
+							</div>\
+							<div class="mb-3">\
+								<p class="m-b-0">Длина, мм</p>\
+								<input class="form-control validation_input add_slebs_inp1" type="text" name="length[]" required>\
+								<div class="validation_label">Заполните это поле</div>\
+							</div>\
+							<div class="mb-3">\
+								<p class="m-b-0">Высота, мм</p>\
+								<input class="form-control validation_input add_slebs_inp2" type="text" name="width[]" required>\
+								<div class="validation_label">Заполните это поле</div>\
+							</div>\
+							<div class="mb-3">\
+								<p class="m-b-0">Толщина, мм</p>\
+								<input class="form-control validation_input add_slebs_inp3" type="text" name="thickness[]" required>\
+								<div class="validation_label">Заполните это поле</div>\
+							</div>\
+							<div class="mb-3">\
+								<p class="m-b-0">Комментарий</p>\
+								<input class="form-control" type="text" name="prim[]">\
+							</div>\
+							<div class="mb-3">\
+								<p class="m-b-0">Комментарий менеджера</p>\
+								<textarea class="form-control" type="text" name="comment[]"></textarea>\
+							</div>\
+							<h5 class="m-t-0 mb-1">Коммерческая информация</h5>\
+							<div class="mb-3">\
+								<p class="m-b-0">Цена за м2 (евро.)</p>\
+								<input class="form-control validation_input add_slebs_inp4" type="text" name="price_ish[]" required>\
+								<div class="validation_label">Заполните это поле</div>\
+							</div>\
+							<!--<div class="mb-3">\
+								<p class="m-b-0">За м2 для Мрамор (евро.)</p>\
+								<input class="form-control" type="text" name="price_dist[]">\
+							</div>\
+							<div class="mb-3">\
+								<p class="m-b-0">Цена дистрибьютора (евро.)</p>\
+								<input class="form-control" type="text" name="price_ryn[]">\
+							</div>-->\
+						</fieldset>';
+
+		$('#add_slebs_wrapp').append($tamplate);
+
+		if($('#add_slebs_wrapp').children().length == 1){
+			$('#add_slebs_wrapp').append($btn);
+		}
+
+		listLoadImg();
+	}
+	
+
+	$('#add_slebs_wrapp').on('click blur change input', '.validation_input', function(){
+		validationInput($(this));
+	});
+
+	$('#add_slebs_wrapp').on('click', '.add_slebs_item_close', function(){
+		
+		var $item = $(this).closest('.add_slebs_item'),
+			$itemsQt = $item.siblings('.add_slebs_item').length,
+			$name = $item.find('.add_slebs_item_title').text();
+
+		if($itemsQt){
+			$item.remove();
+			listLoadImg();
+		}
+		else{
+			$('#add_slebs_wrapp').html('');
+			$('#add_slebs').val('').closest('.add_slebs-file').show();
+		}
+
+	});
+
+	$('#add_slebs_wrapp').on('click', '.js_copy_values', function(){
+
+		var $item = $(this).prev('.add_slebs_item'),
+			$items = $item.siblings('.add_slebs_item'),
+			$inp1 = $item.find('.add_slebs_inp1').val(),
+			$inp2 = $item.find('.add_slebs_inp2').val(),
+			$inp3 = $item.find('.add_slebs_inp3').val(),
+			$inp4 = $item.find('.add_slebs_inp4').val();
+
+		for (var i = $items.length - 1; i >= 0; i--) {
+			
+			$($items[i]).find('.add_slebs_inp1').val($inp1);
+			$($items[i]).find('.add_slebs_inp2').val($inp2);
+			$($items[i]).find('.add_slebs_inp3').val($inp3);
+			$($items[i]).find('.add_slebs_inp4').val($inp4);
+		
+		}
+	});
+
+	// Filtr slebs
+	$('#filtr_start').click(function(){
+//		filtr_elements('ajax_admin_slebs');
+		init_tab_func();
+//		initialization_table_func();
+	});
+	// Filtr types
+	$('#filtr_start_t').click(function(){
+		filtr_elements('ajax_admin_types');
+	});
+	// Filtr names
+	$('#filtr_start_n').click(function(){
+		filtr_elements('ajax_admin_names');
+	});
+	
+	// Filtr blocks
+	$('#filtr_start_b').click(function(){
+		filtr_elements('ajax_admin_blocks');
+	});
+	// Filtr subblocks
+	$('#filtr_start_sb').click(function(){
+		filtr_elements('ajax_admin_subblocks');
+	});
+	// Filtr orders
+	$('#filtr_start_or').click(function(){
+		filtr_elements('ajax_admin_orders');
+	});
+	// Filtr orders
+	$('#filtr_start_d').click(function(){
+		filtr_elements('ajax_admin_discounts');
+	});
+	
+	$('#types').change(function(){
+		change_types();
+	});
+	$('#names').change(function(){
+		change_names();
+	});
+	$('#block_type_id').change(function(){
+		change_admin_types();
+	});
+	$('#block_name_id').change(function(){
+		change_admin_names();
+	});
+	$('#block_block_id').change(function(){
+		change_admin_blocks();
+	});
+	$('#stone_type').change(function(){
+		change_order_types();
+	});
+	$('#stone_name').change(function(){
+		change_order_names();
+	});
+	$('#name_block').change(function(){
+		change_order_blocks();
+	});
+	$('#name_sub_block').change(function(){
+		change_order_subblocks();
+	});
+	$('.add_clone').click(function(){
+		$('#clone_add').val('1');
+	});
+	$('#send_invoice').click(function(){
+		send_invoice($(this).attr('data-id'));
+	});
+	$('#send_dogovor').click(function(){
+		send_dogovor($(this).attr('data-id'));
+	});
+	$('#send_order').click(function(){
+		send_order($(this).attr('data-id'));
+	});
+});
+function filtr_elements(act)
+{
+	param =  new Array();
+	var formid='elm_params';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+			{
+				if(!param[data[0]]) {
+					param[data[0]]=new Array();
+					var j=0;
+				}
+				param[data[0]][j]=data[1];
+				j++;
+			}
+			else
+				param[data[0]]=data[1];
+		}
+	}
+	param['act']=act;
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$('#admin_table_list').html(req.responseText);
+				initialization_table_func();
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function change_types()
+{
+	param =  new Array();
+	var formid='elm_params';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+			{
+				if(!param[data[0]])
+					param[data[0]]=new Array();
+				param[data[0]][i]=data[1];
+			}
+			else
+				param[data[0]]=data[1];
+		}
+	}
+	param['act']='change_types';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#names').html(req.responseText);			
+			change_names();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function change_names()
+{
+	param =  new Array();
+	var formid='elm_params';
+	param= new Array();
+	if(document.getElementById(formid))
+	{
+		str = $("#"+formid).serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+			{
+				if(!param[data[0]])
+					param[data[0]]=new Array();
+				param[data[0]][i]=data[1];
+			}
+			else
+				param[data[0]]=data[1];
+		}
+	}
+	param['act']='change_names';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#blocks').html(req.responseText);
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+
+}
+function change_admin_types()
+{
+	var typeid=$('#block_type_id').val();
+	var act='change_admin_types';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#block_name_id').html(req.responseText);
+			if($('#block_block_id').length>0)
+				change_admin_names();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, typeid:typeid} );
+}
+function change_admin_names()
+{
+	var nameid=$('#block_name_id').val();
+	var tp=$('#tp').val();
+	//block_name_id
+	var act='change_admin_names';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#block_block_id').html(req.responseText);
+			if($('#block_subblock_id').length>0)
+				change_admin_blocks();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, nameid:nameid, tp:tp} );
+}
+function change_admin_blocks()
+{
+	var blockid=$('#block_block_id').val();
+	var tp=$('#tp').val();
+	var act='change_admin_blocks';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#block_subblock_id').html(req.responseText);
+			obrabotkaSelectShow($('#block_subblock_id'));
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, blockid:blockid, tp:tp} );
+}
+
+function change_order_types()
+{
+	var typeid=$('#stone_type').val();
+	var order_id=$('#order_id').val();
+	var act='change_admin_types';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#stone_name').html(req.responseText);
+			if($('#name_block').length>0)
+				change_order_names();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, typeid:typeid, order_id:order_id, tp:'order'} );
+}
+function change_order_names()
+{
+	var nameid=$('#stone_name').val();
+	var order_id=$('#order_id').val();
+	var act='change_admin_names';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#name_block').html(req.responseText);
+			if($('#name_sub_block').length>0)
+				change_order_blocks();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, nameid:nameid, order_id:order_id, tp:'order'} );
+}
+function change_order_blocks()
+{
+	var blockid=$('#name_block').val();
+	var order_id=$('#order_id').val();
+	var act='change_admin_blocks';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#name_sub_block').html(req.responseText);
+			if($('#name_sleb').length>0)
+				change_order_subblocks();
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, blockid:blockid, order_id:order_id, tp:'order'} );
+}
+function change_order_subblocks()
+{
+	var subblockid=$('#name_sub_block').val();
+	var order_id=$('#order_id').val();
+	var act='change_admin_subblocks';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			$('#name_sleb').html(req.responseText);
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, subblockid:subblockid, order_id:order_id, tp:'order'} );
+}
+function change_bounds()
+{
+//	alert('change_bounds');
+	param =  new Array();
+	if($('.params_elm').length>0)
+	{
+		str = $('.params_elm').serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+			{
+				if(!param[data[0]])
+					param[data[0]]=new Array();
+				param[data[0]][i]=data[1];
+			}
+			else
+			{
+				param[data[0]]=data[1];
+//				alert(data[0]+' - '+data[1]);
+			}
+		}
+	}
+	param['act']='change_bounds';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				if(req.responseText=='ok')
+				{
+					if(param['tab']=='catalog')
+						init_tab_func();
+					else
+						filtr_elements(param['list_t']);
+					$('.modal-close').trigger('click');
+				}
+				else
+				{		
+					alert(req.responseText);
+				}
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function change_status()
+{
+//	alert('change_bounds');
+	param =  new Array();
+	if($('.params_elm').length>0)
+	{
+		str = $('.params_elm').serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+			{
+				if(!param[data[0]])
+					param[data[0]]=new Array();
+				param[data[0]][i]=data[1];
+			}
+			else
+			{
+				param[data[0]]=data[1];
+//				alert(data[0]+' - '+data[1]);
+			}
+		}
+	}
+	param['act']='change_status';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				if(req.responseText=='ok')
+				{
+//					filtr_elements(param['list_t']);
+					init_tab_func();
+					$('.modal-close').trigger('click');
+				}
+				else
+				{		
+					alert(req.responseText);
+				}
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+function add_discount()
+{
+	param =  new Array();
+	if($('.params_elm').length>0)
+	{
+		str = $('.params_elm').serialize();
+		lines = str.split("&");
+		for ( i = 0; i < lines.length; i++ ) 
+		{
+			data = lines[i].split("=");
+			if($('[name="'+data[0]+'"]').attr('multiple')=='multiple')
+			{
+				if(!param[data[0]])
+					param[data[0]]=new Array();
+				param[data[0]][i]=data[1];
+			}
+			else
+			{
+				param[data[0]]=data[1];
+//				alert(data[0]+' - '+data[1]);
+			}
+		}
+	}
+	param['act']='add_discount';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				if(req.responseText=='ok')
+				{
+					filtr_elements(param['list_t']);
+					$('.modal-close').trigger('click');
+				}
+				else
+				{		
+					alert(req.responseText);
+				}
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {param:param} );
+}
+
+
+function init_tab_func()
+{
+	var table = $('#example').DataTable();
+	var tab=$('input[name="tab"]').val();
+	setTimeout(function() {
+		table.draw();
+	}, 50);
+
+// 04.04.2019
+	/* ==========================================================================
+	Input checks
+	========================================================================== */
+	$('.check_all').change(function(){	
+		if(this.checked) {
+			$(this).parents('.card').find('input').prop('checked', true);
+			$(this).parents('.card').find('tbody tr').addClass('selected');
+		} else{
+			$(this).parents('.card').find('input').prop('checked', false);
+			$(this).parents('.card').find('tbody tr').removeClass('selected');
+		}
+	});
+	// 17.04.2019
+	$('#example').on( 'page.dt', function () {
+		$('.check_all').prop('checked', false);
+		$('.check_all').parents('.card').find('input').prop('checked', false);
+		$('tr').removeClass('selected');
+	});
+	
+	$('#example').on('change', '.check_row', function(){		
+		if(this.checked){
+			$(this).parents('tr').addClass('selected');
+		} else{
+			$(this).parents('tr').removeClass('selected');
+		}
+	});
+	
+	/* ==========================================================================
+	Response click
+	========================================================================== */
+
+	$('#example').on( 'draw.dt', function () {
+		$('.check_row').on('click', function(event){
+			event.stopPropagation();						
+		});
+	});
+	/* ==========================================================================
+	Datatable
+	========================================================================== */
+	// 21.04.2019
+	if(tab!='catalog')
+		block_delete();
+}
+function block_delete() {
+	var table = $('#example').DataTable();
+	$('#example').on("click", ".delete_btn", function(){
+		$(this).parents('.tabledit-toolbar').find('.tabledit-confirm-button').toggle();	
+	});
+	$('#example').on("click", ".block_btn", function(){
+		$(this).parents('.tabledit-toolbar').find('.block-confirm-button').toggle();	
+	});
+	
+
+	$('#example').on("click", ".tabledit-confirm-button", function(){
+		var id=$(this).parents('tr').find('.delete_btn').attr('data-id');
+		var tab=$(this).parents('tr').find('.delete_btn').attr('data-tab');
+		var dob=$(this);
+		var act='admin_delete_element';
+		// Create new JsHttpRequest object.
+		var req = new JsHttpRequest();
+		// Code automatically called on load finishing.
+		req.onreadystatechange = function() 
+		{
+			if (req.readyState == 4) {
+				if(req.responseText=='ok')
+				{
+					if(tab=='catalog')
+						init_tab_func();
+					else
+						table.row(dob.parents('tr')).remove().draw(false);
+				}
+				else
+					alert(req.responseText);
+			}
+		}
+		// Prepare request object (automatically choose GET or POST).
+		req.open('post', '/ajax.php', true);
+		// Send data to backend.
+		req.send( {act:act, id:id, tab:tab} );		
+	});
+	$('#example').on("click", ".block-confirm-button", function(){
+		var id=$(this).parents('tr').find('.block_btn').attr('data-id');
+		var tab=$(this).parents('tr').find('.block_btn').attr('data-tab');
+		var block=($(this).parents('.tabledit-toolbar').find('.block_btn').hasClass("banned")?'0':'1');
+		var bob=$(this);
+		var act='admin_block_element';
+		// Create new JsHttpRequest object.
+		var req = new JsHttpRequest();
+		// Code automatically called on load finishing.
+		req.onreadystatechange = function() 
+		{
+			if (req.readyState == 4) {
+				if(req.responseText=='ok')
+				{
+					if(tab=='catalog')
+						init_tab_func();
+					else
+						bob.parents('.tabledit-toolbar').find('.block_btn').toggleClass('banned');
+				}
+				else
+					alert(req.responseText);
+
+				bob.hide();
+			}
+		}
+		// Prepare request object (automatically choose GET or POST).
+		req.open('post', '/ajax.php', true);
+		// Send data to backend.
+		req.send( {act:act, id:id, tab:tab, block:block} );
+	});
+}
+function send_invoice(orderid)
+{
+	var act='send_invoice';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$("#modalUniversal #modal_text").html(req.responseText);
+				$("#modalUniversal #ModalLabel").html('Отправка счёта');
+				$("#modalUniversal").modal('show');
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, id:orderid} );
+}
+function send_dogovor(orderid)
+{
+	var act='send_dogovor';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$("#modalUniversal #modal_text").html(req.responseText);
+				$("#modalUniversal #ModalLabel").html('Отправка договора купли-продажи');
+				$("#modalUniversal").modal('show');
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, id:orderid} );
+}
+function send_order(orderid)
+{
+	var act='send_order';
+	// Create new JsHttpRequest object.
+	var req = new JsHttpRequest();
+	// Code automatically called on load finishing.
+	req.onreadystatechange = function() 
+	{
+		if (req.readyState == 4) {
+			if(req.responseText)
+			{
+				$("#modalUniversal #modal_text").html(req.responseText);
+				$("#modalUniversal #ModalLabel").html('Отправка заказа');
+				$("#modalUniversal").modal('show');
+			}
+		}
+	}
+	// Prepare request object (automatically choose GET or POST).
+	req.open('post', '/ajax.php', true);
+	// Send data to backend.
+	req.send( {act:act, id:orderid} );
+}
+
+
+
+
+// Отключаем отправки формы по нажатию на enter
+$(document).ready(function() {
+    $("form").keydown(function(event){
+        if(event.keyCode == 13) {
+          	event.preventDefault();
+          	return false;
+      	}
+   	});
+});
+//отправка формы смены статусов
+$(document).ready(function(){
+	$('#change_status').click(function(){
+		$('#change_status_form').submit();
+	});
+});
